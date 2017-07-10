@@ -18,5 +18,5 @@ class Development(Config):
 
 
 class Testing(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///test_db.sqlite3'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../app/test_db.sqlite3'
     SQLALCHEMY_ECHO = True

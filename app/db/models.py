@@ -1,14 +1,5 @@
-import os
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from app.app import db
 
-app = Flask('db')
-
-app.config.from_object(os.getenv('APP_SETTINGS'))
-
-db = SQLAlchemy(app)
-
-from sqlalchemy import ForeignKey
 
 class Bucketlist(db.Model):
     __tablename__ = 'bucketlist'

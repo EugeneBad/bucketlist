@@ -1,8 +1,8 @@
 import os
 import unittest
-from sqlalchemy import create_engine,engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime, date
+from datetime import datetime
 
 
 os.environ['APP_SETTINGS'] = 'config.Testing'
@@ -14,7 +14,7 @@ class TestBucketlistModel(unittest.TestCase):
     def setUp(self):
         # Create the database that will be used for testing
 
-        self.engine = create_engine('sqlite:///test_db.sqlite3')
+        self.engine = create_engine('sqlite:///../app/test_db.sqlite3')
 
         # Launch a session to that database
         self.session = sessionmaker(bind=self.engine)()
@@ -63,7 +63,7 @@ class TestBucketlistModel(unittest.TestCase):
 class TestItemsModel(unittest.TestCase):
 
     def setUp(self):
-        self.engine = create_engine('sqlite:///test_db.sqlite3')
+        self.engine = create_engine('sqlite:///../app/test_db.sqlite3')
 
         # Launch a session to that database
         self.session = sessionmaker(bind=self.engine)()
@@ -118,7 +118,7 @@ class TestItemsModel(unittest.TestCase):
 
     def tearDown(self):
         # Delete the test database
-        os.remove('test_db.sqlite3')
+        os.remove('../app/test_db.sqlite3')
 
 if __name__ == '__main__':
     unittest.main()
