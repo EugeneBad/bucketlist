@@ -1,5 +1,7 @@
-from app.app import db
+from app.app import app
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy(app)
 
 class Bucketlist(db.Model):
     __tablename__ = 'bucketlist'
