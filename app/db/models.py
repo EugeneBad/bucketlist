@@ -1,26 +1,20 @@
-from app.app import app
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy(app)
+from datetime import datetime
+from app.app import db
 
 
 class Bucketlist(db.Model):
     __tablename__ = 'bucketlist'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
-    cd = db.Column(db.Date)
-    md = db.Column(db.Date)
-    cb = db.Column(db.String(35))
+    name = db.Column(db.String(120), unique=True, nullable=False)
+    creation_date = db.Column(db.Date,
+                              default=datetime.now().date(),
+                              nullable=False)
+    modification_date = db.Column(db.Date,
+                                  default=datetime.now().date(),
+                                  onupdate=datetime.now().date(),
+                                  nullable=False)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    created_by = db.relationship('User', backref='bucketlists')
     items = db.relationship('Item', backref='bucketlist')
 
 
-class Item(db.Model):
-    __tablename__ = 'item'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
-    cd = db.Column(db.Date)
-    md = db.Column(db.Date)
-    completed = db.Column(db.Boolean)
-    bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
-
-db.create_all()
