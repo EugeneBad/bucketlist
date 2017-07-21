@@ -91,3 +91,15 @@ class TestLoginView(BaseTest):
                                  data={'username': 'master', 'password': 'slave'})
         self.assertEqual(response.status_code, 400,
                          msg='Login view accepts invalid password')
+
+    # Valid credentials
+    def test_valid_credentials(self):
+        self.app.post('api/V1/auth/register',
+                      data={'username': 'slave', 'password': 'slave'})
+        response = self.app.post('api/V1/auth/login',
+                                 data={'username': 'slave', 'password': 'slave'})
+        self.assertTrue(response.status_code == 200,
+                        msg='Login view does not accept valid credentials')
+        self.assertTrue(json.loads(response.data.decode()).get('auth_token'),
+                        msg='Login view does not return auth token')
+
