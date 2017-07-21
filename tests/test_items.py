@@ -1,4 +1,4 @@
-from . test_base import BaseTest
+from .test_base import BaseTest
 from itertools import cycle
 import json
 
@@ -55,6 +55,16 @@ class TestBucketlistItems(BaseTest):
 
         self.assertEqual(duplicate_name_response.status_code, 409,
                          msg='BucketlistItems view accepts a duplicate bucketlist name')
+
+    def test_items_in_non_existent_bucketlist(self):
+        get_response = self.app.get('api/V1/bucketlists/176897/items',
+                                    headers={'token': self.auth_token})
+
+        post_response = self.app.post('api/V1/bucketlists/87671/items',
+                                      headers={'token': self.auth_token})
+
+        self.assertTrue(get_response.status_code == post_response.status_code == 404,
+                         msg='BucketlistItems view not return 404 for non-existent bucketlist')
 
     # Response if items exist
     def test_response_on_existing_items(self):
