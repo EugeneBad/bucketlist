@@ -342,17 +342,17 @@ class BucketListItemDetail(Request, Resource):
         if not self.is_authenticated():
             return 'Please login', 401
 
-        request_args = self.parse_args()
-
-        # Missing item name
-        if not request_args.get('name') and not request_args.get('done'):
-            return 'Item name needed', 400
-
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
 
         if not bucketlist:
             return 'Bucketlist does not exist', 404
+
+        request_args = self.parse_args()
+
+        # Missing item name
+        if not request_args.get('name') and not request_args.get('done'):
+            return 'Item name needed', 400
 
         item = session.query(Item).filter_by(id=item_id,
                                              bucketlist=bucketlist).first()
