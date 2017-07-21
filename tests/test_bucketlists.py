@@ -171,7 +171,8 @@ class TestBucketlistDetail(BaseTest):
         delete_response = self.app.delete('api/V1/bucketlists/1',
                                           headers={'token': self.auth_token})
 
-        self.assertEqual(delete_response.status_code, 200, msg='200 not returned for successful deletion')
+        self.assertEqual(delete_response.status_code, 200,
+                         msg='200 not returned for successful deletion of bucketlist')
         get_response = self.app.get('api/V1/bucketlists/1',
                                     headers={'token': self.auth_token})
         self.assertEqual(get_response.status_code, 404,

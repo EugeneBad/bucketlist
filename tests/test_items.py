@@ -153,11 +153,23 @@ class TestBucketlistItemDetail(BaseTest):
 
     # Updating non-existent item
     def test_update_non_existent_bucketlist(self):
-        put_response = self.app.put('api/V1/bucketlists/4/items/34523',
+        put_response = self.app.put('api/V1/bucketlists/1/items/34523',
                                     headers={'token': self.auth_token},
                                     data={'name': 'Texas'})
 
         self.assertEqual(put_response.status_code, 404,
                          msg='BucketlistItemDetail view does not return 404 for updating non-existent item')
+
+    # Successful deletion
+    def test_deletion(self):
+        delete_response = self.app.delete('api/V1/bucketlists/1/items/4',
+                                          headers={'token': self.auth_token})
+
+        self.assertEqual(delete_response.status_code, 200,
+                         msg='200 not returned for successful deletion of item')
+        get_response = self.app.get('api/V1/bucketlists/1/items/4',
+                                    headers={'token': self.auth_token})
+        self.assertEqual(get_response.status_code, 404,
+                         msg='DELETE request to BucketlistItemDetail does not delete item')
 
     
