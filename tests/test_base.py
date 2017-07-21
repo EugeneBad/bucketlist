@@ -8,3 +8,6 @@ class BaseTest(unittest.TestCase):
         self.app = app.test_client()
         db.create_all()
         
+    def tearDown(self):
+        db.drop_all()
+
