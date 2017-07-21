@@ -64,7 +64,7 @@ class TestBucketlistItems(BaseTest):
                                       headers={'token': self.auth_token})
 
         self.assertTrue(get_response.status_code == post_response.status_code == 404,
-                         msg='BucketlistItems view not return 404 for non-existent bucketlist')
+                        msg='BucketlistItems view not return 404 for non-existent bucketlist')
 
     # Response if items exist
     def test_response_on_existing_items(self):
@@ -83,3 +83,17 @@ class TestBucketlistItems(BaseTest):
         for item in response_content.get('Items'):
             self.assertEqual(item.get('name'), next(expected_names),
                              msg='Correct names of items not returned')
+
+
+class TestBucketlistItemDetail(BaseTest):
+    def setUp(self):
+        super().setUp()
+        self.app.post('api/V1/bucketlists',
+                      headers={'token': self.auth_token},
+                      data={'name': 'Travel'})
+
+        for city in ['Tokyo', 'Utah', 'Venice', 'Warsaw', 'York']:
+            self.app.post('api/V1/bucketlists/1/items',
+                          headers={'token': self.auth_token},
+                          data={'name': city})
+    
