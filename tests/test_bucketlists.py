@@ -180,9 +180,7 @@ class TestBucketlistDetail(BaseTest):
 
     # Deleting non-existent bucketlist
     def test_delete_non_existent_bucketlist(self):
-        delete_response = self.app.delete('api/V1/bucketlists/897971',
-                                          headers={'token': self.auth_token},
-                                          data={'name': 'Cars'})
+        delete_response = self.app.delete('api/V1/bucketlists/897971', headers={'token': self.auth_token})
 
         self.assertEqual(delete_response.status_code, 404,
-                         msg='BucketlistDetail view does not return 404 for deleting non existent bucketlist')
+                         msg='BucketlistDetail view does not return 404 for trying to delete non existent bucketlist')
