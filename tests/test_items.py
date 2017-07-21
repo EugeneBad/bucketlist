@@ -150,4 +150,14 @@ class TestBucketlistItemDetail(BaseTest):
 
         self.assertEqual(put_response.status_code, 200,
                          msg='BucketlistItemDetail view does not update item name')
+
+    # Updating non-existent item
+    def test_update_non_existent_bucketlist(self):
+        put_response = self.app.put('api/V1/bucketlists/4/items/34523',
+                                    headers={'token': self.auth_token},
+                                    data={'name': 'Texas'})
+
+        self.assertEqual(put_response.status_code, 404,
+                         msg='BucketlistItemDetail view does not return 404 for updating non-existent item')
+
     
