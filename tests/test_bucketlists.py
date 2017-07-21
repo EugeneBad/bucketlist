@@ -1,10 +1,9 @@
 from itertools import cycle
-from . test_base import BaseTest
+from .test_base import BaseTest
 import json
 
 
 class BucketlistsTest(BaseTest):
-
     def setUp(self):
         super().setUp()
         for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:
@@ -96,7 +95,6 @@ class BucketlistsTest(BaseTest):
 
 
 class TestBucketlistDetail(BaseTest):
-
     def setUp(self):
         super().setUp()
         for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:
@@ -111,11 +109,11 @@ class TestBucketlistDetail(BaseTest):
         delete_response = self.app.delete('api/V1/bucketlists/1')
 
         self.assertEqual(get_response.status_code, 401,
-                        msg='BucketlistDetail view accepts unauthenticated GET requests')
+                         msg='BucketlistDetail view accepts unauthenticated GET requests')
         self.assertEqual(put_response.status_code, 401,
-                        msg='BucketlistDetail view accepts unauthenticated PUT requests')
+                         msg='BucketlistDetail view accepts unauthenticated PUT requests')
         self.assertEqual(delete_response.status_code, 401,
-                        msg='BucketlistDetail view accepts unauthenticated DELETE requests')
+                         msg='BucketlistDetail view accepts unauthenticated DELETE requests')
 
     # Non existent bucketlist
     def test_get_response_non_existent_bucketlist(self):
@@ -127,7 +125,6 @@ class TestBucketlistDetail(BaseTest):
 
     # Getting existent bucketlist
     def test_get_response_when_bucketlist_existent(self):
-
         get_response = self.app.get('api/V1/bucketlists/1',
                                     headers={'token': self.auth_token})
 
@@ -172,10 +169,19 @@ class TestBucketlistDetail(BaseTest):
     # Successful deletion
     def test_deletion(self):
         delete_response = self.app.delete('api/V1/bucketlists/1',
-                                    headers={'token': self.auth_token})
+                                          headers={'token': self.auth_token})
 
         self.assertEqual(delete_response.status_code, 200, msg='200 not returned for successful deletion')
         get_response = self.app.get('api/V1/bucketlists/1',
                                     headers={'token': self.auth_token})
         self.assertEqual(get_response.status_code, 404,
                          msg='DELETE request to BucketlistDetail does not delete bucketlist')
+
+    # Updating with valid name
+    def test_delete_non_existent_bucketlist(self):
+        delete_response = self.app.delete('api/V1/bucketlists/897971',
+                                          headers={'token': self.auth_token},
+                                          data={'name': 'Cars'})
+
+        self.assertEqual(delete_response.status_code, 404,
+                         msg='BucketlistDetail view does not return 404 for deleting non existent bucketlist')
