@@ -118,9 +118,17 @@ class TestBucketlistItemDetail(BaseTest):
                          msg='404 not returned for non-existent item')
 
     # Getting existent item
-    def test_get_response_when_bucketlist_existent(self):
+    def test_get_response_when_item_existent(self):
         get_response = self.app.get('api/V1/bucketlists/1/items/1',
                                     headers={'token': self.auth_token})
 
         self.assertEqual(get_response.status_code, 200,
                          msg='BucketlistItemDetail does not return details of existent item')
+
+    # Updating with no name
+    def test_fail_when_update_name_empty(self):
+        put_response = self.app.put('api/V1/bucketlists/1/items/1',
+                                    headers={'token': self.auth_token}, data={'name': ''})
+
+        self.assertEqual(put_response.status_code, 400,
+                         msg='BucketlistItemDetail view does not reject updating item with an empty name')
