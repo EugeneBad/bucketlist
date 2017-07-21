@@ -170,4 +170,3 @@ class TestBucketlistDetail(BaseTest):
                                     headers={'token': self.auth_token})
         self.assertEqual(get_response.status_code, 404,
                          msg='DELETE request to BucketlistDetail does not delete bucketlist')
-
