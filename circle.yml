@@ -7,6 +7,6 @@ machine:
 
 test:
   override:
-    - py.test --cov tests
+    - py.test --cov=app tests
   post:
     - codecov
