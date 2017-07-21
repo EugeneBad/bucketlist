@@ -1,6 +1,6 @@
 import hashlib
 import jwt
-
+from jwt import ExpiredSignatureError, InvalidTokenError
 import datetime
 
 from flask_restful import Resource
@@ -43,6 +43,36 @@ class Request(RequestParser):
         hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
         return hashed_password
 
+    def is_authenticated(self):
+        """
+        Method used to identify the user of an incoming request via the token;
+        returns True if user is valid.
+        """
+        try:
+            token = self.parse_args()['token']
+            user_data = jwt.decode(token, key=SECRET_KEY)
+            self.current_user = session.query(User).filter_by(username=user_data['username']).first()
+            return True
+
+        except (AttributeError, ExpiredSignatureError, InvalidTokenError):
+            return False
+
+    def paginated(self, obj_list):
+        """ Method used to paginate results in an object list """
+        self.page = 1 if not self.parse_args().get('page') else int(self.parse_args().get('page'))
+        self.limit = 20 if not self.parse_args().get('limit') else int(self.parse_args().get('limit'))
+
+        paginator_obj = obj_list.paginate(1, self.limit)
+        self.total_pages = paginator_obj.pages
+
+        # If the requested page number is out of bounds, return the last page.
+        if self.page > self.total_pages:
+            self.page = self.total_pages
+
+        paginated_list = obj_list.paginate(self.page, self.limit)
+        return paginated_list.items
+
+
 class Register(Request, Resource):
     """ View class called to register a new user, accessible only via a POST request  """
     def post(self):
@@ -73,3 +103,25 @@ class Register(Request, Resource):
 
         return {'auth_token': auth_token}, 200
 
+
+class Login(Request, Resource):
+    """ Class based view used to log in a user, accessible only via a POST request """
+    def post(self):
+        login_data = self.parse_args()
+
+        # Both username and password have to be supplied
+        if not login_data.get('username') or not login_data.get('password'):
+            return 'Both username and password required', 400
+
+        user = User.query.filter_by(username=login_data.get('username')).first()
+
+        # User has to exist and password supplied has to be correct.
+        if not user or self.set_password(login_data.get('password')) != user.password:
+            return 'Check username and password', 400
+
+        # Token payload is encoded with username and expiry date
+        payload = {'username': user.username,
+                   "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=600)}
+        auth_token = jwt.encode(payload, key=SECRET_KEY).decode()
+
+        return {'auth_token': auth_token}, 200
