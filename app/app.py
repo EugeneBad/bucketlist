@@ -9,3 +9,6 @@ app.config.from_object(os.getenv('APP_SETTINGS'))
 api = Api(app)
 db = SQLAlchemy(app)
 db.create_all()
+
+from app.api.endpoints import api_endpoints
+api_endpoints(api)
