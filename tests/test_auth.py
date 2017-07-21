@@ -51,3 +51,29 @@ class TestRegisterView(BaseTest):
 
         self.assertEqual(response.status_code, 409,
                          msg='Register view accepts duplicate username')
+
+
+class TestLoginView(BaseTest):
+
+    # Takes only post
+    def test_non_post_methods(self):
+        get_response = self.app.get('api/V1/auth/login')
+        put_response = self.app.put('api/V1/auth/login')
+        self.assertTrue(get_response.status_code == put_response.status_code == 405,
+                        msg='Login view accepts other methods')
+
+    # Missing credentials
+    def test_missing_credentials(self):
+        response = self.app.post('api/V1/auth/login')
+        self.assertEqual(response.status_code, 400,
+                         msg='Login view accepts missing username and password')
+
+        response = self.app.post('api/V1/auth/login',
+                                 data={'username': '', 'password': 'master'})
+        self.assertEqual(response.status_code, 400,
+                         msg='Login view accepts password with missing username')
+
+        response = self.app.post('api/V1/auth/login',
+                                 data={'username': 'master', 'password': ''})
+        self.assertEqual(response.status_code, 400,
+                         msg='Login view accepts username with missing password')
