@@ -372,6 +372,7 @@ class BucketListItemDetail(Request, Resource):
             return 'Item updated', 200
 
         except IntegrityError:
+            session.rollback()
             return 'Item name already exists', 409
 
     def delete(self, bucketlist_id, item_id):

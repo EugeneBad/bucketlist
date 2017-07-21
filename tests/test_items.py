@@ -132,3 +132,12 @@ class TestBucketlistItemDetail(BaseTest):
 
         self.assertEqual(put_response.status_code, 400,
                          msg='BucketlistItemDetail view does not reject updating item with an empty name')
+
+    # Updating with duplicate name
+    def test_fail_when_update_name_duplicate(self):
+        put_response = self.app.put('api/V1/bucketlists/1/items/1',
+                                    headers={'token': self.auth_token},
+                                    data={'name': 'Warsaw'})
+
+        self.assertEqual(put_response.status_code, 409,
+                         msg='BucketlistItemDetail view does not return 409 for updating with a duplicate name')
