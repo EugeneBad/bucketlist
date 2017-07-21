@@ -1,4 +1,5 @@
 from . test_base import BaseTest
+from itertools import cycle
 import json
 
 
@@ -54,3 +55,21 @@ class TestBucketlistItems(BaseTest):
 
         self.assertEqual(duplicate_name_response.status_code, 409,
                          msg='BucketlistItems view accepts a duplicate bucketlist name')
+
+    # Response if items exist
+    def test_response_on_existing_items(self):
+        response = self.app.get('api/V1/bucketlists/1/items',
+                                headers={'token': self.auth_token})
+
+        self.assertEqual(response.status_code, 200,
+                         msg='BucketlistItems view not successfully fetching items')
+
+        response_content = json.loads(response.data.decode())
+        self.assertEqual(len(response_content.get('Items')), 5,
+                         msg='BucketlistItems view returns wrong number of items')
+
+        expected_names = cycle(['Tokyo', 'Utah', 'Venice', 'Warsaw', 'York'])
+
+        for item in response_content.get('Items'):
+            self.assertEqual(item.get('name'), next(expected_names),
+                             msg='Correct names of items not returned')
