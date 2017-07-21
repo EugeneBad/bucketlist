@@ -28,3 +28,11 @@ class TestBucketlistItems(BaseTest):
 
         self.assertEqual(get_response.status_code, 200,
                          msg='BucketlistItems view rejects authenticated users')
+
+    # Create with missing name
+    def test_fail_create_item_with_missing_name(self):
+        post_response = self.app.post('api/V1/bucketlists/1/items',
+                                      headers={'token': self.auth_token},
+                                      data={'name': ''})
+        self.assertEqual(post_response.status_code, 400,
+                         msg='BucketlistItems view does not return 400 for POST with missing name')
