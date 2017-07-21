@@ -96,4 +96,24 @@ class TestBucketlistItemDetail(BaseTest):
             self.app.post('api/V1/bucketlists/1/items',
                           headers={'token': self.auth_token},
                           data={'name': city})
-    
+
+    # Authentication requirement
+    def test_authentication_requirement(self):
+        get_response = self.app.get('api/V1/bucketlists/1/items/1')
+        put_response = self.app.put('api/V1/bucketlists/1/items/1')
+        delete_response = self.app.delete('api/V1/bucketlists/1/items/1')
+
+        self.assertEqual(get_response.status_code, 401,
+                         msg='BucketlistItemDetail view accepts unauthenticated GET requests')
+        self.assertEqual(put_response.status_code, 401,
+                         msg='BucketlistItemDetail view accepts unauthenticated PUT requests')
+        self.assertEqual(delete_response.status_code, 401,
+                         msg='BucketlistItemDetail view accepts unauthenticated DELETE requests')
+
+
+
+
+
+
+
+
