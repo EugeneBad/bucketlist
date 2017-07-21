@@ -42,3 +42,12 @@ class TestRegisterView(BaseTest):
                          msg='Register view not successful when valid credentials supplied')
         self.assertTrue(json.loads(response.data.decode()).get('auth_token'),
                         msg='Token not returned on successful registration')
+
+    # Duplicate username
+    def test_duplicate_username(self):
+        self.app.post('api/V1/auth/register', data={'username': 'slave', 'password': 'slave'})
+        response = self.app.post('api/V1/auth/register',
+                                 data={'username': 'slave', 'password': 'slave'})
+
+        self.assertEqual(response.status_code, 409,
+                         msg='Register view accepts duplicate username')
