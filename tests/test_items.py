@@ -143,13 +143,20 @@ class TestBucketlistItemDetail(BaseTest):
                          msg='BucketlistItemDetail view does not return 409 for updating with a duplicate name')
 
     # Updating with valid name
-    def test_update_with_new_item_name(self):
-        put_response = self.app.put('api/V1/bucketlists/1/items/3',
-                                    headers={'token': self.auth_token},
-                                    data={'name': 'Lisbon'})
+    def test_update_with_new_item_details(self):
+        name_put_response = self.app.put('api/V1/bucketlists/1/items/3',
+                                         headers={'token': self.auth_token},
+                                         data={'name': 'Lisbon'})
 
-        self.assertEqual(put_response.status_code, 200,
+        done_put_response = self.app.put('api/V1/bucketlists/1/items/3',
+                                         headers={'token': self.auth_token},
+                                         data={'done': True})
+
+        self.assertEqual(name_put_response.status_code, 200,
                          msg='BucketlistItemDetail view does not update item name')
+
+        self.assertEqual(done_put_response.status_code, 200,
+                         msg='BucketlistItemDetail view does not update item completion status')
 
     # Updating non-existent item
     def test_update_non_existent_bucketlist(self):

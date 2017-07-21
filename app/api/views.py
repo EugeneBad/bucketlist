@@ -345,7 +345,7 @@ class BucketListItemDetail(Request, Resource):
         request_args = self.parse_args()
 
         # Missing item name
-        if not request_args.get('name'):
+        if not request_args.get('name') and not request_args.get('done'):
             return 'Item name needed', 400
 
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
