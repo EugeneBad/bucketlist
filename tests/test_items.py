@@ -36,3 +36,14 @@ class TestBucketlistItems(BaseTest):
                                       data={'name': ''})
         self.assertEqual(post_response.status_code, 400,
                          msg='BucketlistItems view does not return 400 for POST with missing name')
+
+    # Create with valid name
+    def test_create_bucketlist_with_valid_name(self):
+        post_response = self.app.post('api/V1/bucketlists/1/items',
+                                      headers={'token': self.auth_token},
+                                      data={'name': 'Beijing'})
+
+        self.assertEqual(post_response.status_code, 200,
+                         msg='Bucketlists view does not create new bucketlist')
+
+    
