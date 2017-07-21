@@ -7,6 +7,6 @@ machine:
 
 test:
   override:
-    - coverage run pytest tests
+    - py.test --cov tests
   post:
     - codecov
