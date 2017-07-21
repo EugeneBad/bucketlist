@@ -33,3 +33,12 @@ class TestRegisterView(BaseTest):
                                  data={'username': '', 'password': 'master'})
         self.assertEqual(response.status_code, 400,
                          msg='Register view accepts password without username')
+
+    # Valid username and password
+    def test_valid_username_password(self):
+        response = self.app.post('api/V1/auth/register',
+                                 data={'username': 'master', 'password': 'master'})
+        self.assertEqual(response.status_code, 200,
+                         msg='Register view not successful when valid credentials supplied')
+        self.assertTrue(json.loads(response.data.decode()).get('auth_token'),
+                        msg='Token not returned on successful registration')
