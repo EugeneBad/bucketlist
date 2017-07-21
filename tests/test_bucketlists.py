@@ -107,7 +107,7 @@ class TestBucketlistDetail(BaseTest):
     # Authentication requirement
     def test_authentication_requirement(self):
         get_response = self.app.get('api/V1/bucketlists/1')
-        put_response = self.app.get('api/V1/bucketlists/1')
+        put_response = self.app.put('api/V1/bucketlists/1')
         delete_response = self.app.delete('api/V1/bucketlists/1')
 
         self.assertEqual(get_response.status_code, 401,
@@ -159,6 +159,15 @@ class TestBucketlistDetail(BaseTest):
 
         self.assertEqual(put_response.status_code, 200,
                          msg='BucketlistDetail view does not update bucketlist name')
+
+    # Updating with valid name
+    def test_update_non_existent_bucketlist(self):
+        put_response = self.app.put('api/V1/bucketlists/1785765',
+                                    headers={'token': self.auth_token},
+                                    data={'name': 'Cars'})
+
+        self.assertEqual(put_response.status_code, 404,
+                         msg='BucketlistDetail view does not return 404 for updating non-existent bucketlist')
 
     # Successful deletion
     def test_deletion(self):
