@@ -110,8 +110,12 @@ class TestBucketlistItemDetail(BaseTest):
         self.assertEqual(delete_response.status_code, 401,
                          msg='BucketlistItemDetail view accepts unauthenticated DELETE requests')
 
-
-
+    # Non existent bucketlist
+    def test_get_response_non_existent_item(self):
+        get_response = self.app.get('api/V1/bucketlists/1/items/94759485',
+                                    headers={'token': self.auth_token})
+        self.assertEqual(get_response.status_code, 404,
+                         msg='404 not returned for non-existent item')
 
 
 
