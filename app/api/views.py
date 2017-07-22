@@ -6,14 +6,9 @@ import datetime
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from app.db.models import Bucketlist, Item, User
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
-from app.app import app
-
-db_engine = create_engine(app.config.get('SQLALCHEMY_DATABASE_URI'))
-session = sessionmaker(bind=db_engine)()
-SECRET_KEY = app.config.get('SECRET_KEY')
+from app.app import session, SECRET_KEY
+# Moving 13- 16 out of view
 
 
 class Request(RequestParser):
@@ -53,14 +48,14 @@ class Request(RequestParser):
             user_data = jwt.decode(token, key=SECRET_KEY)
             self.current_user = session.query(User).filter_by(username=user_data['username']).first()
             return True
-
+        # AttributeError separated
         except (AttributeError, ExpiredSignatureError, InvalidTokenError):
             return False
 
     def paginated(self, obj_list):
         """ Method used to paginate results in an object list """
-        self.page = 1 if not self.parse_args().get('page') else int(self.parse_args().get('page'))
-        self.limit = 20 if not self.parse_args().get('limit') else int(self.parse_args().get('limit'))
+        self.page = 1 if not self.parse_args().get('page', 1) else int(self.parse_args().get('page'))
+        self.limit = 20 if not self.parse_args().get('limit', 20) else int(self.parse_args().get('limit'))
 
         paginator_obj = obj_list.paginate(1, self.limit)
         self.total_pages = paginator_obj.pages
@@ -141,7 +136,7 @@ class Bucketlists(Request, Resource):
         bucketlists = Bucketlist.query.filter_by(created_by=self.current_user)
 
         if not len(list(bucketlists)):
-            return {'Bucketlists': 'None'}, 200
+            return {'Bucketlists': 'None'}, 200  # Return empty list
 
         paginated_list = self.paginated(bucketlists)
 
@@ -394,4 +389,3 @@ class BucketListItemDetail(Request, Resource):
         session.delete(item)
         session.commit()
         return 'Item deleted', 200
-

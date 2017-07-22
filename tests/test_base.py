@@ -13,4 +13,3 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         db.drop_all()
-
