@@ -52,6 +52,14 @@ class Request(RequestParser):
         except (AttributeError, ExpiredSignatureError, InvalidTokenError):
             return False
 
+    def save(self, obj):
+        session.add(obj)
+        session.commit()
+
+    def delete(self, obj):
+        session.delete(obj)
+        session.commit()
+
     def paginated(self, obj_list):
         """ Method used to paginate results in an object list """
         self.page = 1 if not self.parse_args().get('page', 1) else int(self.parse_args().get('page'))
@@ -88,8 +96,7 @@ class Register(Request, Resource):
 
         new_user = User(username=login_data.get('username'),
                         password=secure_password)
-        session.add(new_user)
-        session.commit()
+        self.save(new_user)
 
         # Token payload is encoded with the new user's username and an expiry period.
         payload = {'username': new_user.username,
@@ -162,8 +169,7 @@ class Bucketlists(Request, Resource):
         try:
             new_bucketlist = Bucketlist(name=request_args.get('name'),
                                         created_by=self.current_user)
-            session.add(new_bucketlist)
-            session.commit()
+            self.save(new_bucketlist)
             return 'Bucketlist successfully created', 200
 
         # Raised by Database API when the unique constraint on name is violated
@@ -218,8 +224,7 @@ class BucketlistDetail(Request, Resource):
             try:
                 # Update bucketlist name and commit to the database
                 bucketlist.name = request_args.get('name')
-                session.add(bucketlist)
-                session.commit()
+                self.save(bucketlist)
                 return 'Bucketlist successfully updated', 200
 
             except IntegrityError:
