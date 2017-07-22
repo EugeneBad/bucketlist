@@ -1,7 +1,7 @@
 import unittest
 import jwt
-from app.app import app, db, session
-from app.db.models import Bucketlist, Item, User
+from app import app, db, session
+from app.database.models import Bucketlist, Item, User
 
 
 class BaseTest(unittest.TestCase):

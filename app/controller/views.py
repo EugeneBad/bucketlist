@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
-from app.db.models import Bucketlist, Item, User
-from app.app import session
+from app.database.models import Bucketlist, Item, User
+from app import session
 from . utils import RequestMixin
 
 

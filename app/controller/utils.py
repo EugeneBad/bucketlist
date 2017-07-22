@@ -2,8 +2,8 @@ import datetime
 import hashlib
 from flask_restful.reqparse import RequestParser
 import jwt
-from app.app import session, SECRET_KEY
-from app.db.models import User
+from app import session, SECRET_KEY
+from app.database.models import User
 
 
 class RequestMixin(RequestParser):
