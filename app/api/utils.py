@@ -6,7 +6,7 @@ from app.app import session, SECRET_KEY
 from app.db.models import User
 
 
-class Request(RequestParser):
+class RequestMixin(RequestParser):
     def __init__(self):
         """
         Utility class used for performing generic manipulations on incoming request objects.

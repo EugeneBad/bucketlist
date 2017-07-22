@@ -1,12 +1,11 @@
-import jwt
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from app.db.models import Bucketlist, Item, User
-from app.app import session, SECRET_KEY
-from . utils import Request
+from app.app import session
+from . utils import RequestMixin
 
 
-class Register(Request, Resource):
+class Register(RequestMixin, Resource):
     """ View class called to register a new user, accessible only via a POST request  """
     def post(self):
         login_data = self.parse_args()
@@ -33,7 +32,7 @@ class Register(Request, Resource):
         return {'auth_token': auth_token}, 200
 
 
-class Login(Request, Resource):
+class Login(RequestMixin, Resource):
     """ Class based view used to log in a user, accessible only via a POST request """
     def post(self):
         login_data = self.parse_args()
@@ -54,7 +53,7 @@ class Login(Request, Resource):
         return {'auth_token': auth_token}, 200
 
 
-class Bucketlists(Request, Resource):
+class Bucketlists(RequestMixin, Resource):
     """
     Class based view that handles: display of bucketlists using the GET http verb
     and creation of bucketlists using the POST http verb
@@ -103,7 +102,7 @@ class Bucketlists(Request, Resource):
             return 'Bucketlist name already exists', 409
 
 
-class BucketlistDetail(Request, Resource):
+class BucketlistDetail(RequestMixin, Resource):
     """
         Class based view that handles: display of a bucketlist's details using the GET http verb
         and updating of a bucketlist using the PUT http verb, as well as deleting
@@ -176,7 +175,7 @@ class BucketlistDetail(Request, Resource):
         return 'Bucketlist successfully deleted', 200
 
 
-class BucketlistItems(Request, Resource):
+class BucketlistItems(RequestMixin, Resource):
     """
     View class used to display items in a particular bucketlist using the GET http verb;
      as well as create new items using the POST http verb.
@@ -231,7 +230,7 @@ class BucketlistItems(Request, Resource):
             return 'Item name already exists', 409
 
 
-class BucketListItemDetail(Request, Resource):
+class BucketListItemDetail(RequestMixin, Resource):
     """
         View class used to display an item's details using the GET http verb;
          as well as update items using the PUT http verb.
