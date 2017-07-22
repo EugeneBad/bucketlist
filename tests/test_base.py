@@ -1,15 +1,17 @@
-from app.app import app, db
 import unittest
-import json
+import jwt
+from app.app import app, db, session
+from app.db.models import Bucketlist, Item, User
 
 
 class BaseTest(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         db.create_all()
-        register_user = self.app.post('api/V1/auth/register',
-                                      data={'username': 'admin', 'password': 'admin'})
-        self.auth_token = json.loads(register_user.data.decode()).get('auth_token')
+        test_user = User(username='admin', password='admin')
+        session.add(test_user)
+        session.commit()
+        self.auth_token = jwt.encode({'username': 'admin'}, app.config.get('SECRET_KEY'))
 
     def tearDown(self):
         db.drop_all()
