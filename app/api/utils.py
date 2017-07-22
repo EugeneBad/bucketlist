@@ -65,8 +65,8 @@ class RequestMixin(RequestParser):
 
     def paginated(self, obj_list):
         """ Method used to paginate results in an object list """
-        self.page = 1 if not self.parse_args().get('page', 1) else int(self.parse_args().get('page'))
-        self.limit = 20 if not self.parse_args().get('limit', 20) else int(self.parse_args().get('limit'))
+        self.page = 1 if not self.parse_args().get('page') else int(self.parse_args().get('page'))
+        self.limit = 20 if not self.parse_args().get('limit') else int(self.parse_args().get('limit'))
 
         paginator_obj = obj_list.paginate(1, self.limit)
         self.total_pages = paginator_obj.pages
