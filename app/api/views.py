@@ -56,7 +56,7 @@ class Request(RequestParser):
         session.add(obj)
         session.commit()
 
-    def delete(self, obj):
+    def remove(self, obj):
         session.delete(obj)
         session.commit()
 
@@ -247,8 +247,7 @@ class BucketlistDetail(Request, Resource):
         if not bucketlist:
             return 'Bucketlist does not exist', 404
 
-        session.delete(bucketlist)
-        session.commit()
+        self.remove(bucketlist)
         return 'Bucketlist successfully deleted', 200
 
 
@@ -299,8 +298,7 @@ class BucketlistItems(Request, Resource):
         try:
             new_item = Item(name=request_args.get('name'), bucketlist=bucketlist)
 
-            session.add(new_item)
-            session.commit()
+            self.save(new_item)
             return 'New item added successfully', 200
 
         except IntegrityError:
@@ -367,8 +365,7 @@ class BucketListItemDetail(Request, Resource):
             if request_args.get('done'):
                 item.completed = request_args.get('done')
 
-            session.add(item)
-            session.commit()
+            self.save(item)
             return 'Item updated', 200
 
         except IntegrityError:
@@ -391,6 +388,5 @@ class BucketListItemDetail(Request, Resource):
         if not item:
             return 'Item does not exist', 404
 
-        session.delete(item)
-        session.commit()
+        self.remove(item)
         return 'Item deleted', 200
