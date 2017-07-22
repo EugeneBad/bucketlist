@@ -4,12 +4,6 @@ import json
 
 
 class BucketlistsTest(BaseTest):
-    def setUp(self):
-        super().setUp()
-        for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:
-            self.app.post('api/V1/bucketlists',
-                          headers={'token': self.auth_token},
-                          data={'name': name})
 
     # Authentication required
     def test_authentication_requirement(self):

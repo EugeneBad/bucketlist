@@ -8,9 +8,13 @@ class BaseTest(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         db.create_all()
+
         test_user = User(username='admin', password='admin')
-        session.add(test_user)
-        session.commit()
+
+        for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:
+            session.add(Bucketlist(name=name, created_by=test_user))
+            session.commit()
+
         self.auth_token = jwt.encode({'username': 'admin'}, app.config.get('SECRET_KEY'))
 
     def tearDown(self):
