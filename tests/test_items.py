@@ -4,16 +4,6 @@ import json
 
 
 class TestBucketlistItems(BaseTest):
-    def setUp(self):
-        super().setUp()
-        self.app.post('api/V1/bucketlists',
-                      headers={'token': self.auth_token},
-                      data={'name': 'Travel'})
-
-        for city in ['Tokyo', 'Utah', 'Venice', 'Warsaw', 'York']:
-            self.app.post('api/V1/bucketlists/1/items',
-                          headers={'token': self.auth_token},
-                          data={'name': city})
 
     # Authentication required
     def test_authentication_requirement(self):
@@ -86,16 +76,6 @@ class TestBucketlistItems(BaseTest):
 
 
 class TestBucketlistItemDetail(BaseTest):
-    def setUp(self):
-        super().setUp()
-        self.app.post('api/V1/bucketlists',
-                      headers={'token': self.auth_token},
-                      data={'name': 'Travel'})
-
-        for city in ['Tokyo', 'Utah', 'Venice', 'Warsaw', 'York']:
-            self.app.post('api/V1/bucketlists/1/items',
-                          headers={'token': self.auth_token},
-                          data={'name': city})
 
     # Authentication requirement
     def test_authentication_requirement(self):
