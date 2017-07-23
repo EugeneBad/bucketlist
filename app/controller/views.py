@@ -187,7 +187,7 @@ class BucketlistItems(RequestMixin, Resource):
 
         # For a bucketlist with no items
         if not list(bucketlist_items):
-            return {'Items': 'None'}, 200
+            return {'Items': []}, 200
 
         bucketlist_items = [{'id': item.id,
                              'name': item.name,
