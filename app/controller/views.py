@@ -64,7 +64,7 @@ class Bucketlists(RequestMixin, Resource):
         bucketlists = Bucketlist.query.filter_by(created_by=self.current_user)
 
         if not list(bucketlists):
-            return {'Bucketlists': 'None'}, 200  # Return empty list
+            return {'Bucketlists': []}, 200
 
         paginated_list = self.paginated(bucketlists)
 
@@ -119,7 +119,7 @@ class BucketlistDetail(RequestMixin, Resource):
                                  'name': item.name,
                                  'done': item.completed} for item in bucketlist.items]
         else:
-            bucketlist_items = 'None'
+            bucketlist_items = []
 
         bucketlist_detail = {'id': bucketlist.id,
                              'name': bucketlist.name,
