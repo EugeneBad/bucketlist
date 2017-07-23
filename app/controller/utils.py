@@ -4,6 +4,7 @@ from flask_restful.reqparse import RequestParser
 import jwt
 from app import session, SECRET_KEY
 from app.database.models import User
+from functools import wraps
 
 
 class RequestMixin(RequestParser):
@@ -33,19 +34,26 @@ class RequestMixin(RequestParser):
         hashed_password = hashlib.sha256(salted_password.encode()).hexdigest()
         return hashed_password
 
-    def is_authenticated(self):
+    @staticmethod
+    def is_authenticated(view_method):
         """
-        Method used to identify the user of an incoming request via the token;
-        returns True if user is valid.
+        Decorator method used to identify the user of an incoming request via the token.
+        Returns a 401 if:- Token is not supplied
+                         - Token is invalid
+                         - Token is expired
         """
-        try:
-            token = self.parse_args()['token']
-            user_data = jwt.decode(token, key=SECRET_KEY)
-            self.current_user = session.query(User).filter_by(username=user_data['username']).first()
-            return True
+        @wraps(view_method)
+        def view_wrapper(self, **kwargs):
+            try:
 
-        except (AttributeError, jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-            return False
+                token = self.parse_args()['token']
+                user_data = jwt.decode(token, key=SECRET_KEY)
+                self.current_user = session.query(User).filter_by(username=user_data['username']).first()
+                return view_method(self, **kwargs)
+
+            except (AttributeError, jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+                return 'Please login', 401
+        return view_wrapper
 
     def generate_token(self, username):
         # Token payload is encoded with the new user's username and an expiry period.

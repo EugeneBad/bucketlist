@@ -58,12 +58,9 @@ class Bucketlists(RequestMixin, Resource):
     Class based view that handles: display of bucketlists using the GET http verb
     and creation of bucketlists using the POST http verb
     """
+    @RequestMixin.is_authenticated
     def get(self):
         """ Called for a GET request """
-        # View is only accessible by a logged in user.
-        if not self.is_authenticated():
-            return 'Please login', 401
-
         bucketlists = Bucketlist.query.filter_by(created_by=self.current_user)
 
         if not len(list(bucketlists)):
@@ -80,10 +77,9 @@ class Bucketlists(RequestMixin, Resource):
         return {'Bucketlists': list_of_bucketlists,
                 'Page': '{} of {}'.format(self.page, self.total_pages)}, 200
 
+    @RequestMixin.is_authenticated
     def post(self):
         """ Called for a POST request """
-        if not self.is_authenticated():
-            return 'Please login', 401
 
         request_args = self.parse_args()
 
@@ -109,10 +105,9 @@ class BucketlistDetail(RequestMixin, Resource):
         using the DELETE http verb.
     """
 
+    @RequestMixin.is_authenticated
     def get(self, bucketlist_id):
         """ Called for a GET request """
-        if not self.is_authenticated():
-            return 'Please login', 401
 
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id,
                                                 created_by=self.current_user).first()
@@ -135,10 +130,9 @@ class BucketlistDetail(RequestMixin, Resource):
 
         return bucketlist_detail, 200
 
+    @RequestMixin.is_authenticated
     def put(self, bucketlist_id):
         """ Called for a PUT request """
-        if not self.is_authenticated():
-            return 'Please login', 401
 
         request_args = self.parse_args()
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
@@ -161,10 +155,9 @@ class BucketlistDetail(RequestMixin, Resource):
         else:
             return 'Bucketlist does not exist', 404
 
+    @RequestMixin.is_authenticated
     def delete(self, bucketlist_id):
         """ Called for a DELETE request """
-        if not self.is_authenticated():
-            return 'Please login', 401
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
 
@@ -181,11 +174,9 @@ class BucketlistItems(RequestMixin, Resource):
      as well as create new items using the POST http verb.
     """
 
+    @RequestMixin.is_authenticated
     def get(self, bucketlist_id):
         """ Called with the GET http verb """
-        # Only authenticated users
-        if not self.is_authenticated():
-            return 'Please login', 401
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id,
                                                 created_by=self.current_user).first()
 
@@ -204,11 +195,9 @@ class BucketlistItems(RequestMixin, Resource):
         return {'Items': bucketlist_items,
                 'Page': '{} of {}'.format(self.page, self.total_pages)}, 200
 
+    @RequestMixin.is_authenticated
     def post(self, bucketlist_id):
         """ Called with the POST http verb """
-        # Only authenticated users
-        if not self.is_authenticated():
-            return 'Please login', 401
         request_args = self.parse_args()
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
@@ -236,11 +225,10 @@ class BucketListItemDetail(RequestMixin, Resource):
          as well as update items using the PUT http verb.
          Also deletes items using the DELETE http verb
     """
+
+    @RequestMixin.is_authenticated
     def get(self, bucketlist_id, item_id):
         """ Called with a GET request """
-        # Only authenticated users
-        if not self.is_authenticated():
-            return 'Please login', 401
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
 
@@ -258,11 +246,9 @@ class BucketListItemDetail(RequestMixin, Resource):
                        'last_modified': str(item.modification_date)}
         return item_detail, 200
 
+    @RequestMixin.is_authenticated
     def put(self, bucketlist_id, item_id):
         """ Called with a PUT request """
-        # Only authenticated users
-        if not self.is_authenticated():
-            return 'Please login', 401
 
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
@@ -296,11 +282,9 @@ class BucketListItemDetail(RequestMixin, Resource):
             session.rollback()
             return 'Item name already exists', 409
 
+    @RequestMixin.is_authenticated
     def delete(self, bucketlist_id, item_id):
         """ Called with a DELETE request """
-        # Only authenticated users
-        if not self.is_authenticated():
-            return 'Please login', 401
         bucketlist = session.query(Bucketlist).filter_by(id=bucketlist_id,
                                                          created_by=self.current_user).first()
 
