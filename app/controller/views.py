@@ -63,7 +63,7 @@ class Bucketlists(RequestMixin, Resource):
         """ Called for a GET request """
         bucketlists = Bucketlist.query.filter_by(created_by=self.current_user)
 
-        if not len(list(bucketlists)):
+        if not list(bucketlists):
             return {'Bucketlists': 'None'}, 200  # Return empty list
 
         paginated_list = self.paginated(bucketlists)
@@ -186,7 +186,7 @@ class BucketlistItems(RequestMixin, Resource):
         bucketlist_items = Item.query.filter_by(bucketlist=bucketlist)
 
         # For a bucketlist with no items
-        if not len(list(bucketlist_items)):
+        if not list(bucketlist_items):
             return {'Items': 'None'}, 200
 
         bucketlist_items = [{'id': item.id,
