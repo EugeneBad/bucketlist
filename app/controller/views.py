@@ -61,7 +61,11 @@ class Bucketlists(RequestMixin, Resource):
     @RequestMixin.is_authenticated
     def get(self):
         """ Called for a GET request """
-        bucketlists = Bucketlist.query.filter_by(created_by=self.current_user)
+        bucketlists = Bucketlist.query.filter(Bucketlist.created_by == self.current_user)
+
+        # When search phrase is supplied, re-filter bucketlists with 'contains' constraint
+        if self.parse_args().get('search'):
+            bucketlists = bucketlists.filter(Bucketlist.name.contains(self.parse_args().get('search')))
 
         if not list(bucketlists):
             return {'Bucketlists': []}, 200
@@ -183,7 +187,11 @@ class BucketlistItems(RequestMixin, Resource):
         if not bucketlist:
             return 'Bucketlist does not exist', 404
 
-        bucketlist_items = Item.query.filter_by(bucketlist=bucketlist)
+        bucketlist_items = Item.query.filter(Item.bucketlist == bucketlist)
+
+        # When search phrase is supplied, re-filter items with 'contains' constraint
+        if self.parse_args().get('search'):
+            bucketlist_items = bucketlist_items.filter(Item.name.contains(self.parse_args().get('search')))
 
         # For a bucketlist with no items
         if not list(bucketlist_items):

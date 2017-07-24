@@ -22,6 +22,7 @@ class RequestMixin(RequestParser):
         self.add_argument('token', location='headers')
         self.add_argument('page', location='args')
         self.add_argument('limit', location='args')
+        self.add_argument('search', location='args')
 
     def set_password(self, password):
         """
