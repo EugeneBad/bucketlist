@@ -87,6 +87,14 @@ class BucketlistsTest(BaseTest):
         self.assertEqual(len(response_content.get('Bucketlists')), 2,
                          msg='Bucketlists view returns wrong number of bucketlists per page')
 
+    def test_search(self):
+        response = self.app.get('api/V1/bucketlists?search=od',
+                                headers={'token': self.auth_token})
+
+        response_content = json.loads(response.data.decode())
+        self.assertEqual(response_content.get('Bucketlists')[0].get('name'), 'Food',
+                         msg='search query argument not filtering results')
+
 
 class TestBucketlistDetail(BaseTest):
     def setUp(self):
