@@ -1,7 +1,9 @@
+from hashlib import sha256
 import unittest
 import jwt
 from app import app, db, session
 from app.database.models import Bucketlist, Item, User
+from app import SECRET_KEY
 
 
 class BaseTest(unittest.TestCase):
@@ -9,7 +11,8 @@ class BaseTest(unittest.TestCase):
         self.app = app.test_client()
         db.create_all()
 
-        test_user = User(username='admin', password='admin')
+        test_user = User(username='admin',
+                         password=sha256(('admin' + SECRET_KEY).encode()).hexdigest())
         session.add(test_user)
 
         for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:

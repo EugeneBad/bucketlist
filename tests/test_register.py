@@ -5,7 +5,7 @@ from . test_base import BaseTest
 class TestRegisterView(BaseTest):
 
     # Missing arguments
-    def test_missing_username_password(self):
+    def test_missing_both_username_and_password(self):
         response = self.app.post('api/V1/auth/register')
         self.assertEqual(response.status_code, 400,
                          msg='Register view accepts missing username and password')
@@ -20,6 +20,7 @@ class TestRegisterView(BaseTest):
         self.assertEqual(response.status_code, 400,
                          msg='Register view accepts empty username and password')
 
+    def test_missing_either_username_or_password(self):
         response = self.app.post('api/V1/auth/register',
                                  data={'username': 'master', 'password': ''})
         self.assertEqual(response.status_code, 400,
@@ -34,7 +35,7 @@ class TestRegisterView(BaseTest):
     def test_valid_username_password(self):
         response = self.app.post('api/V1/auth/register',
                                  data={'username': 'master', 'password': 'master'})
-        self.assertEqual(response.status_code, 200,
+        self.assertEqual(response.status_code, 201,
                          msg='Register view not successful when valid credentials supplied')
         self.assertTrue(json.loads(response.data.decode()).get('auth_token'),
                         msg='Token not returned on successful registration')

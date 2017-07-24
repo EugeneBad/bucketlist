@@ -29,7 +29,7 @@ class Register(RequestMixin, Resource):
 
         auth_token = self.generate_token(new_user.username)
 
-        return {'auth_token': auth_token}, 200
+        return {'auth_token': auth_token}, 201
 
 
 class Login(RequestMixin, Resource):
@@ -39,13 +39,13 @@ class Login(RequestMixin, Resource):
 
         # Both username and password have to be supplied
         if not login_data.get('username') or not login_data.get('password'):
-            return 'Both username and password required', 400
+            return 'Both username and password required', 401
 
         user = User.query.filter_by(username=login_data.get('username')).first()
 
         # User has to exist and password supplied has to be correct.
         if not user or self.set_password(login_data.get('password')) != user.password:
-            return 'Check username and password', 400
+            return 'Check username and password', 401
 
         # Token payload is encoded with username and expiry date
         auth_token = self.generate_token(user.username)
