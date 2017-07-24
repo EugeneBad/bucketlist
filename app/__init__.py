@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 app = Flask(__name__)
 app.config.from_object(os.getenv('APP_SETTINGS'))
 
-api = Api(app)
+api = Api(app, prefix='/api/V1')
 db = SQLAlchemy(app)
 db.create_all()
 
