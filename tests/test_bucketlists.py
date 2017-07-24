@@ -73,14 +73,14 @@ class BucketlistsTest(BaseTest):
                              msg='Correct names of bucketlists not returned')
 
     def test_pagination(self):
-        response = self.app.get('api/V1/bucketlists?limit=3&page=1',
+        response = self.app.get('api/V1/bucketlists?limit=3&offset=1',
                                 headers={'token': self.auth_token})
 
         response_content = json.loads(response.data.decode())
         self.assertEqual(len(response_content.get('Bucketlists')), 3,
                          msg='Bucketlists view returns wrong number of bucketlists per page')
 
-        response = self.app.get('api/V1/bucketlists?limit=2&page=2',
+        response = self.app.get('api/V1/bucketlists?limit=2&offset=2',
                                 headers={'token': self.auth_token})
 
         response_content = json.loads(response.data.decode())
@@ -88,7 +88,7 @@ class BucketlistsTest(BaseTest):
                          msg='Bucketlists view returns wrong number of bucketlists per page')
 
     def test_search(self):
-        response = self.app.get('api/V1/bucketlists?search=od',
+        response = self.app.get('api/V1/bucketlists?q=od',
                                 headers={'token': self.auth_token})
 
         response_content = json.loads(response.data.decode())

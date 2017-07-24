@@ -20,9 +20,9 @@ class RequestMixin(RequestParser):
         self.add_argument('username', location='form')
         self.add_argument('password', location='form')
         self.add_argument('token', location='headers')
-        self.add_argument('page', location='args')
+        self.add_argument('offset', location='args')
         self.add_argument('limit', location='args')
-        self.add_argument('search', location='args')
+        self.add_argument('q', location='args')
 
     def set_password(self, password):
         """
@@ -82,7 +82,7 @@ class RequestMixin(RequestParser):
 
     def paginated(self, obj_list):
         """ Method used to paginate results in an object list """
-        self.page = 1 if not self.parse_args().get('page') else int(self.parse_args().get('page'))
+        self.page = 1 if not self.parse_args().get('offset') else int(self.parse_args().get('offset'))
         self.limit = 20 if not self.parse_args().get('limit') else int(self.parse_args().get('limit'))
 
         paginator_obj = obj_list.paginate(1, self.limit)

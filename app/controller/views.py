@@ -64,8 +64,8 @@ class Bucketlists(RequestMixin, Resource):
         bucketlists = Bucketlist.query.filter(Bucketlist.created_by == self.current_user)
 
         # When search phrase is supplied, re-filter bucketlists with 'contains' constraint
-        if self.parse_args().get('search'):
-            bucketlists = bucketlists.filter(Bucketlist.name.contains(self.parse_args().get('search')))
+        if self.parse_args().get('q'):
+            bucketlists = bucketlists.filter(Bucketlist.name.contains(self.parse_args().get('q')))
 
         if not list(bucketlists):
             return {'Bucketlists': []}, 200
@@ -190,8 +190,8 @@ class BucketlistItems(RequestMixin, Resource):
         bucketlist_items = Item.query.filter(Item.bucketlist == bucketlist)
 
         # When search phrase is supplied, re-filter items with 'contains' constraint
-        if self.parse_args().get('search'):
-            bucketlist_items = bucketlist_items.filter(Item.name.contains(self.parse_args().get('search')))
+        if self.parse_args().get('q'):
+            bucketlist_items = bucketlist_items.filter(Item.name.contains(self.parse_args().get('q')))
 
         # For a bucketlist with no items
         if not list(bucketlist_items):

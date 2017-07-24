@@ -75,7 +75,7 @@ class TestBucketlistItems(BaseTest):
                              msg='Correct names of items not returned')
 
     def test_search(self):
-        response = self.app.get('api/V1/bucketlists/1/items?search=ce',
+        response = self.app.get('api/V1/bucketlists/1/items?q=ce',
                                 headers={'token': self.auth_token})
 
         response_content = json.loads(response.data.decode())
