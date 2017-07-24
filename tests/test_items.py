@@ -74,6 +74,14 @@ class TestBucketlistItems(BaseTest):
             self.assertEqual(item.get('name'), next(expected_names),
                              msg='Correct names of items not returned')
 
+    def test_search(self):
+        response = self.app.get('api/V1/bucketlists/1/items?search=ce',
+                                headers={'token': self.auth_token})
+
+        response_content = json.loads(response.data.decode())
+        self.assertEqual(response_content.get('Items')[0].get('name'), 'Venice',
+                         msg='search query argument not filtering results')
+
 
 class TestBucketlistItemDetail(BaseTest):
 
