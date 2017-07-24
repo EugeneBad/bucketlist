@@ -14,7 +14,6 @@ class Bucketlist(db.Model):
                                   onupdate=datetime.now().date(),
                                   nullable=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    created_by = db.relationship('User', backref='bucketlists')
     items = db.relationship('Item', backref='bucketlist')
 
 
@@ -37,3 +36,4 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(300), nullable=False)
+    bucketlists = db.relationship('Bucketlist', backref='created_by')
