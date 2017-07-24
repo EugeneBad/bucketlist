@@ -1,4 +1,4 @@
-from app.api.views import Bucketlists, BucketlistDetail, BucketlistItems, \
+from app.controller.views import Bucketlists, BucketlistDetail, BucketlistItems, \
     BucketListItemDetail, Register, Login
 
 
