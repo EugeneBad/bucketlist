@@ -18,7 +18,7 @@ Usage
 To get started with the application, clone it from github into a python environment using:
 ::
 
-        git clone http://github.com/EugeneBad/bucketlists.git
+        git clone http://github.com/EugeneBad/bucketlist.git
 
 Navigate into the *bucketlists* directory and install dependencies by running:
 ::
