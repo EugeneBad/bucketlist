@@ -57,6 +57,10 @@ class RequestMixin(RequestParser):
         return view_wrapper
 
     def generate_token(self, username):
+        """
+        Method that takes a username as argument and encodes a token;
+        using the username in the payload
+        """
         # Token payload is encoded with the new user's username and an expiry period.
         payload = {'username': username,
                    "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=600)}
@@ -65,10 +69,14 @@ class RequestMixin(RequestParser):
         return auth_token
 
     def save(self, obj):
+        """ Save an object to the database """
+
         session.add(obj)
         session.commit()
 
     def remove(self, obj):
+        """ Remove an object from the database """
+
         session.delete(obj)
         session.commit()
 
