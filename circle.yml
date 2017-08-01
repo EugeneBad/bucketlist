@@ -1,0 +1,12 @@
+machine:
+  python:
+    version: 3.4.3
+
+  environment:
+    APP_SETTINGS: config.Testing
+
+test:
+  override:
+    - py.test --cov=app tests
+  post:
+    - codecov
