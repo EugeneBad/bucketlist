@@ -11,7 +11,7 @@ class Config:
 
 class Production(Config):
     SQLALCHEMY_ECHO = True
-    # SQLALCHEMY_DATABASE_URI
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
 class Development(Config):
