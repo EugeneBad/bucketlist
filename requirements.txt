@@ -4,6 +4,7 @@ Flask==0.12.2
 Flask-Migrate==2.0.4
 Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.2
+gunicorn
 psycopg2==2.7.1
 PyJWT==1.4.2
 pytest==3.1.3
