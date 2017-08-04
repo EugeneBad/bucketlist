@@ -4,10 +4,12 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from flask_cors import CORS
 
 app = Flask(__name__)
-app.config.from_object(os.getenv('APP_SETTINGS'))
+CORS(app)
 
+app.config.from_object(os.getenv('APP_SETTINGS'))
 api = Api(app, prefix='/api/V1')
 db = SQLAlchemy(app)
 db.create_all()
