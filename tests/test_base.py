@@ -15,12 +15,12 @@ class BaseTest(unittest.TestCase):
                          password=sha256(('admin' + SECRET_KEY).encode()).hexdigest())
         session.add(test_user)
 
-        for name in ['Food', 'Travel', 'People', 'Movies', 'Concerts']:
+        for name in ['concerts', 'movies', 'people', 'travel', 'food']:
             session.add(Bucketlist(name=name, created_by=test_user))
 
         test_bucketlist = session.query(Bucketlist).filter_by(id=1).first()
 
-        for city in ['Tokyo', 'Utah', 'Venice', 'Warsaw', 'York']:
+        for city in ['york', 'warsaw', 'venice', 'utah', 'tokyo']:
             session.add(Item(name=city, bucketlist=test_bucketlist))
 
         session.commit()

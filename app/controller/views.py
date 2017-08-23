@@ -61,11 +61,11 @@ class Bucketlists(RequestMixin, Resource):
     @RequestMixin.is_authenticated
     def get(self):
         """ Called for a GET request """
-        bucketlists = Bucketlist.query.filter(Bucketlist.created_by == self.current_user)
+        bucketlists = Bucketlist.query.filter(Bucketlist.created_by == self.current_user).order_by(Bucketlist.id.desc())
 
         # When search phrase is supplied, re-filter bucketlists with 'contains' constraint
         if self.parse_args().get('q'):
-            bucketlists = bucketlists.filter(Bucketlist.name.contains(self.parse_args().get('q')))
+            bucketlists = bucketlists.filter(Bucketlist.name.contains(self.parse_args().get('q').lower()))
 
         if not list(bucketlists):
             return {'Bucketlists': []}, 200
@@ -74,12 +74,15 @@ class Bucketlists(RequestMixin, Resource):
 
         # List comprehension that generates individual dictionaries of bucketlists
         list_of_bucketlists = [{'id': bucketlist.id,
-                                'name': bucketlist.name,
-                                'items': 'None' if not bucketlist.items else len(bucketlist.items),
+                                'name': bucketlist.name.capitalize(),
+                                'items': 0 if not bucketlist.items else len(bucketlist.items),
                                 'date_created': str(bucketlist.creation_date),
+                                'date_modified': str(bucketlist.modification_date),
                                 'created_by': self.current_user.username} for bucketlist in paginated_list]
         return {'Bucketlists': list_of_bucketlists,
-                'Page': '{} of {}'.format(self.page, self.total_pages)}, 200
+                'Page': '{} of {}'.format(self.page, self.total_pages),
+                'has_next': self.has_next,
+                'has_prev': self.has_prev}, 200
 
     @RequestMixin.is_authenticated
     def post(self):
@@ -91,7 +94,7 @@ class Bucketlists(RequestMixin, Resource):
             return 'Bucketlist name needed', 400
 
         try:
-            new_bucketlist = Bucketlist(name=request_args.get('name'),
+            new_bucketlist = Bucketlist(name=request_args.get('name').lower(),
                                         created_by=self.current_user)
             self.save(new_bucketlist)
             return 'Bucketlist successfully created', 200
@@ -144,8 +147,11 @@ class BucketlistDetail(RequestMixin, Resource):
 
         if bucketlist and request_args.get('name'):
             try:
+                if bucketlist.name.lower() == request_args.get('name').lower():
+                    return 'Bucketlist name already exists', 409
+
                 # Update bucketlist name and commit to the database
-                bucketlist.name = request_args.get('name')
+                bucketlist.name = request_args.get('name').lower()
                 self.save(bucketlist)
                 return 'Bucketlist successfully updated', 200
 
@@ -187,7 +193,7 @@ class BucketlistItems(RequestMixin, Resource):
         if not bucketlist:
             return 'Bucketlist does not exist', 404
 
-        bucketlist_items = Item.query.filter(Item.bucketlist == bucketlist)
+        bucketlist_items = Item.query.filter(Item.bucketlist == bucketlist).order_by(Item.id.desc())
 
         # When search phrase is supplied, re-filter items with 'contains' constraint
         if self.parse_args().get('q'):
@@ -195,12 +201,13 @@ class BucketlistItems(RequestMixin, Resource):
 
         # For a bucketlist with no items
         if not list(bucketlist_items):
-            return {'Items': []}, 200
+            return {'bucketlist_name': bucketlist.name, 'Items': []}, 200
 
         bucketlist_items = [{'id': item.id,
-                             'name': item.name,
-                             'done': item.completed} for item in self.paginated(bucketlist_items)]
-        return {'Items': bucketlist_items,
+                             'name': item.name.capitalize(),
+                             'done': item.completed,
+                             'date_created': str(item.creation_date)} for item in self.paginated(bucketlist_items)]
+        return {'bucketlist_name': bucketlist.name, 'Items': bucketlist_items,
                 'Page': '{} of {}'.format(self.page, self.total_pages)}, 200
 
     @RequestMixin.is_authenticated
@@ -217,7 +224,8 @@ class BucketlistItems(RequestMixin, Resource):
             return 'Item name not supplied', 400
 
         try:
-            new_item = Item(name=request_args.get('name'), bucketlist=bucketlist)
+            new_item = Item(name=request_args.get('name').lower(),
+                            bucketlist=bucketlist)
 
             self.save(new_item)
             return 'New item added successfully', 200
@@ -278,7 +286,10 @@ class BucketListItemDetail(RequestMixin, Resource):
 
         try:
             if request_args.get('name'):
-                item.name = request_args.get('name')
+                if request_args.get('name').lower() == item.name:
+                    return 'Item name already exists', 409
+
+                item.name = request_args.get('name').lower()
 
             if request_args.get('done'):
                 item.completed = request_args.get('done')

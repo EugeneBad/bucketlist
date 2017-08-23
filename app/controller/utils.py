@@ -63,7 +63,7 @@ class RequestMixin(RequestParser):
         """
         # Token payload is encoded with the new user's username and an expiry period.
         payload = {'username': username,
-                   "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=600)}
+                   "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=6000)}
 
         auth_token = jwt.encode(payload, key=SECRET_KEY).decode()
         return auth_token
@@ -93,4 +93,7 @@ class RequestMixin(RequestParser):
             self.page = self.total_pages
 
         paginated_list = obj_list.paginate(self.page, self.limit)
+        self.has_next = paginated_list.has_next
+        self.has_prev = paginated_list.has_prev
+
         return paginated_list.items
