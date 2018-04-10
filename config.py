@@ -11,8 +11,6 @@ class Config:
 
 class Production(Config):
     SQLALCHEMY_ECHO = True
-    # SQLALCHEMY_DATABASE_URI
-
 
 class Development(Config):
     DEBUG = True
